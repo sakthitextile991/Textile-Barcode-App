@@ -41,7 +41,7 @@ def create_dispatch(
     )
 
     dispatch_no = (
-        f"{fy}{next_seq:04d}"
+        f"{fy.replace('/', '')}/{next_seq:04d}"
     )
     
     cache.delete("recent_dispatch")
