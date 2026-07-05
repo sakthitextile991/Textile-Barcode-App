@@ -83,15 +83,15 @@ const Login = () => {
         justifyContent: "center",
         alignItems: "center",
         height: "100vh",
-        background: "#f4f4f4",
+        background: "linear-gradient(135deg,#eef2ff,#f8fafc)",
       }}
     >
       <div
         style={{
-          width: "320px",
+          width: "380px",
           background: "#fff",
-          padding: "40px 25px",
-          borderRadius: "12px",
+          padding: "45px 35px",
+          borderRadius: "18px",
           boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
           display: "flex",
           flexDirection: "column",
@@ -149,7 +149,11 @@ const Login = () => {
             padding: "0 10px",
           }}
         >
-          <FaLock color="#666" />
+          <FaLock color="#666" style={{
+    minWidth: "18px",
+    fontSize: "16px",
+    flexShrink: 0,
+  }} />
 
           <input
             type={
