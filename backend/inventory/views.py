@@ -229,8 +229,10 @@ class RollViewSet(ModelViewSet):
 
         now = timezone.now()
 
-        year = now.year
+        # This year is used to filter the max sequence number
+        year = now.year 
         month = now.month
+        day = now.day
 
         last_sequence = Roll.objects.filter(
             date__year=year
@@ -249,9 +251,12 @@ class RollViewSet(ModelViewSet):
             sequence_no=next_sequence
         )
         
+        # This year is used in roll number ex: 2026 -> 26 
+        year = now.year % 100
         roll_no = (
-            f"{year}"
+            f"{year:02d}"
             f"{month:02d}"
+            f"{day:02d}"
             f"{next_sequence:06d}"
         )
 
@@ -782,73 +787,49 @@ class DashboardAPIView(APIView):
         )
 
         # Bar Chart Data
-        one_months_ago = (
-            timezone.now().date()
-            - timedelta(days=30)
-        )
+        today = timezone.now()
 
-        top_fabrics = (
-            Fabric.objects
+        current_month_dispatches = (
+            Dispatch.objects
+            .filter(
+                dispatched_at__year=today.year,
+                dispatched_at__month=today.month
+            )
+            .values("fabric_type__type")
             .annotate(
-
-                dispatched=Sum(
-                    "rolls__meters",
-                    filter=Q(
-                        rolls__dispatch_status="dispatched",
-                        rolls__date__gte=one_months_ago
-                    )
-                ),
-
-                remaining=Sum(
-                    "rolls__meters",
-                    filter=Q(
-                        rolls__dispatch_status="not_dispatched",
-                        rolls__date__gte=one_months_ago
-                    )
-                )
-
+                total_meters=Sum("total_meters")
             )
-            .exclude(
-                Q(dispatched__isnull=True) &
-                Q(remaining__isnull=True)
-            )
-            .order_by("-remaining")[:10]
+            .order_by("-total_meters")
         )
 
-        production_chart = []
+        st_chart = []
+        nf_chart = []
 
-        for fabric in top_fabrics:
+        for item in current_month_dispatches:
 
-            dispatched = (
-                fabric.dispatched or 0
-            )
+            data = {
+                "fabric": item["fabric_type__type"],
+                "meters": item["total_meters"]
+            }
 
-            remaining = (
-                fabric.remaining or 0
-            )
+            if item["fabric_type__type"].startswith("ST"):
+                st_chart.append(data)
+            
+            elif item["fabric_type__type"].startswith("NF"):
+                nf_chart.append(data)
 
-            if (
-                dispatched == 0 and
-                remaining == 0
-            ):
-                continue
 
-            production_chart.append({
-
-                "fabric": fabric.type,
-
-                "dispatched": dispatched,
-
-                "remaining": remaining,
-
-            })
+        dashboard_chart = {
+            "st_chart" : st_chart,
+            "nf_chart" : nf_chart
+        }
 
         cache.set(
             "dashboard_chart",
-            production_chart,
+            dashboard_chart,
             timeout=300
         )
 
         return Response(
-            production_chart
+            dashboard_chart
         )
