@@ -22,6 +22,17 @@ function BarcodeGenerator() {
   const [selectedFabric, setSelectedFabric] = useState(null);
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
+  const suggestionRefs = useRef([]);
+
+  {/*If highlighted fabric is out of view scroll the suggested list of fabrics */}
+  useEffect(() => {
+    if (highlightedIndex >= 0) {
+      suggestionRefs.current[highlightedIndex]?.scrollIntoView({
+        block: "nearest",
+        behavior: "smooth",
+      });
+    }
+  }, [highlightedIndex]);
 
   {/*Select fabric from suggested list with arrow keys */}
   const handleFabricKeyDown = (e) => {
@@ -351,6 +362,7 @@ function BarcodeGenerator() {
 
                   <div
                       key={fabric.id}
+                      ref={(el) => (suggestionRefs.current[index] = el)}
                       className={`
                           p-2
                           cursor-pointer
