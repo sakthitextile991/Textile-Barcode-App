@@ -37,6 +37,17 @@ function CreateDispatch() {
     const [selectedFabric, setSelectedFabric] = useState(null);
     const [showSuggestions, setShowSuggestions] = useState(false)
     const [highlightedIndex, setHighlightedIndex] = useState(-1);
+    const suggestionRefs = useRef([]);
+
+    {/*If highlighted fabric is out of view scroll the suggested list of fabrics */}
+    useEffect(() => {
+      if (highlightedIndex >= 0) {
+        suggestionRefs.current[highlightedIndex]?.scrollIntoView({
+          block: "nearest",
+          behavior: "smooth",
+        });
+      }
+    }, [highlightedIndex]);
 
     {/*Select fabric from suggested list with arrow keys */}
     const handleFabricKeyDown = (e) => {
@@ -410,11 +421,12 @@ function CreateDispatch() {
                       top-full
                       left-0
                       right-0
+                      mt-1
                       bg-white
                       border
                       rounded-xl
                       shadow-lg
-                      max-h-60
+                      max-h-48
                       overflow-y-auto
                       z-50
                     "
@@ -425,6 +437,7 @@ function CreateDispatch() {
 
                         <div
                           key={fabric.id}
+                          ref={(el) => (suggestionRefs.current[index] = el)}
                           className={`
                             p-3
                             cursor-pointer
