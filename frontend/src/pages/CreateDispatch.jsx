@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/layout/Navbar";
 import api from "../services/api";
@@ -18,10 +18,92 @@ function CreateDispatch() {
     const [customerName, setCustomerName] = useState("");
     const [vehicleNo, setVehicleNo] = useState("");
 
+    {/*Refs to switch fields when pressing enter */}
+    const fabricRef = useRef(null);
+    const customerNameRef = useRef(null);
+    const vechileNoRef = useRef(null);
+    const nextRef = useRef(null);
+
+    {/*Handles when enter is pressed */}
+    const handleEnter = (e, nextRef) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        nextRef.current?.focus();
+      }
+    };
+
+    {/*Type in to search for type of fabric implementation */}
     const [search, setSearch] = useState("");
     const [selectedFabric, setSelectedFabric] = useState(null);
     const [showSuggestions, setShowSuggestions] = useState(false)
+    const [highlightedIndex, setHighlightedIndex] = useState(-1);
 
+    {/*Select fabric from suggested list with arrow keys */}
+    const handleFabricKeyDown = (e) => {
+
+      if (!showSuggestions || filteredFabrics.length === 0) {
+
+        if (e.key === "Enter") {
+          e.preventDefault();
+          metersRef.current?.focus();
+        }
+
+        return;
+      }
+
+      switch (e.key) {
+
+        case "ArrowDown":
+
+          e.preventDefault();
+
+          setHighlightedIndex(prev =>
+            prev < filteredFabrics.length - 1
+              ? prev + 1
+              : 0
+          );
+          break;
+
+        case "ArrowUp":
+
+          e.preventDefault();
+
+          setHighlightedIndex(prev =>
+              prev > 0
+                ? prev - 1
+                : filteredFabrics.length - 1
+          );
+          break;
+
+        case "Enter":
+
+          e.preventDefault();
+
+          if (highlightedIndex >= 0) {
+
+              const fabric =
+                  filteredFabrics[highlightedIndex];
+
+              setSearch(fabric.type);
+              setSelectedFabric(fabric);
+              setShowSuggestions(false);
+              setHighlightedIndex(-1);
+              nextRef.current?.focus();
+          }
+          break;
+
+        case "Escape":
+
+          setShowSuggestions(false);
+          setHighlightedIndex(-1);
+          break;
+
+        default:
+          break;
+      }
+    };
+
+    {/* List down suggested fabric*/}
     const filteredFabrics = fabrics.filter(
         fabric =>
             fabric.type
@@ -185,11 +267,13 @@ function CreateDispatch() {
               </label>
 
               <input
+                ref={vechileNoRef}
                 value={vehicleNo}
                 placeholder="Vehicle no"
                 onChange={(e) =>
                   setVehicleNo(e.target.value)
                 }
+                onKeyDown={(e) => handleEnter(e, customerNameRef)}
                 className="
                   w-full
                   h-14
@@ -236,11 +320,13 @@ function CreateDispatch() {
               </label>
 
               <input
+                ref={customerNameRef}
                 value={customerName}
                 placeholder="Company"
                 onChange={(e) =>
                   setCustomerName(e.target.value)
                 }
+                onKeyDown={(e) => handleEnter(e, fabricRef)}
                 className="
                   w-full
                   h-14
@@ -288,13 +374,16 @@ function CreateDispatch() {
               </label>
 
               <input
+                ref={fabricRef}
                 type="text"
                 value={search}
                 onChange={(e) => {
                   setSearch(e.target.value);
                   setShowSuggestions(true);
                   setSelectedFabric(null);
+                  setHighlightedIndex(-1);
                 }}
+                onKeyDown={handleFabricKeyDown}
                 placeholder="Select Fabric Type"
                 className="
                   w-full
@@ -332,28 +421,25 @@ function CreateDispatch() {
                   >
 
                     {filteredFabrics.map(
-                      (fabric) => (
+                      (fabric, index) => (
 
                         <div
                           key={fabric.id}
-                          className="
+                          className={`
                             p-3
                             cursor-pointer
-                            hover:bg-slate-100
-                          "
+                            ${
+                            highlightedIndex === index
+                                ? "bg-blue-100"
+                                : "hover:bg-gray-100"
+                            }
+                          `}
                           onClick={() => {
-
-                            setSearch(
-                              fabric.type
-                            );
-
-                            setSelectedFabric(
-                              fabric
-                            );
-
-                            setShowSuggestions(
-                              false
-                            );
+                            setSearch(fabric.type);
+                            setSelectedFabric(fabric);
+                            setShowSuggestions(false);
+                            setHighlightedIndex(-1);
+                            nextRef.current?.focus();
                           }}
                         >
                           {fabric.type}
@@ -386,6 +472,7 @@ function CreateDispatch() {
         >
 
           <button
+            ref={nextRef}
             onClick={handleContinue}
             className="
               bg-blue-700

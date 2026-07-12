@@ -12,42 +12,19 @@ import {
 import api from "../../services/api";
 import { useState, useEffect } from "react";
 
-export default function ProductionBarChart() {
-
-  const [data,setData] = useState([]);
-  const hasData = data.some(
-    item =>
-      item.dispatched > 0 ||
-      item.remaining > 0
-  );
+export default function STProductionChart({data}) { 
+  
+  
+  const hasData = data?.length > 0;
+  
+  
 
   {/*Mobile screen will show ony 5 fabrics */}
   const isMobile = window.innerWidth < 768;
   const chartData = isMobile
-    ? data.slice(0, 5)
-    : data;
-  const truncateFabric = (name) => {
-    if (window.innerWidth < 768) {
-      return name.length > 12
-        ? `${name.substring(0, 12)}...`
-        : name;
-    }
-    return name;
-  };
-
+    ? (data ?? []).slice(0, 5)
+    : (data ?? []);
   
-  useEffect(() => {
-
-    api.get("dashboard/")
-      .then((res) => {
-        setData(res.data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-
-  }, []);
-
   if (!hasData) {
     return (
       <div
@@ -77,6 +54,8 @@ export default function ProductionBarChart() {
       </div>
     );
   }
+  
+  
 
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -97,14 +76,8 @@ export default function ProductionBarChart() {
 
         <XAxis 
           dataKey="fabric"
-          interval={0}
-          height={isMobile ? 70 : 50}
-          angle={isMobile ? -35 : 0}
-          textAnchor={isMobile ? "end" : "middle"}
-          tick={{
-            fontSize: isMobile ? 9 : 16
-          }}
-          tickFormatter={truncateFabric}
+          tick={false}
+          tickLine={false}
          />
 
         <YAxis  tickFormatter={(value) =>
@@ -114,37 +87,23 @@ export default function ProductionBarChart() {
 
         <Tooltip />
 
-        <Legend />
-
         {/* Blue Bottom */}
-      <Bar
-        dataKey="dispatched"
-        stackId="a"
-        fill="#3b82f6"
-        name="Dispatched"
-      >
-        <LabelList
-          dataKey="dispatched"
-          position="center"
-          fill="#ffffff"
-          fontSize={12}
-        />
-      </Bar>
+        <Bar
+          dataKey="meters"
+          stackId="a"
+          fill="#3b82f6"
+          name="Dispatched"
+        >
+          <LabelList
+            dataKey="meters"
+            position="center"
+            fill="#ffffff"
+            fontSize={12}
+          />
+        </Bar>
 
-      <Bar
-        dataKey="remaining"
-        stackId="a"
-        fill="#22c55e"
-        name="Remaining Stock"
-      >
-        <LabelList
-          dataKey="remaining"
-          position="center"
-          fill="#ffffff"
-          fontSize={12}
-        />
-      </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        );
-      }
+      
+      </BarChart>
+    </ResponsiveContainer>
+  );
+}
