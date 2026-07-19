@@ -55,7 +55,7 @@ function Home() {
 
         {/* Production Chart */}
 
-        <div className="bg-white rounded-2xl md:rounded-3xl p-4 md:p-5 shadow-lg mb-3">
+        <div className="bg-white rounded-2xl md:rounded-3xl p-4 md:p-5 shadow-lg mb-5">
 
           <div className="flex flex-col">
             
