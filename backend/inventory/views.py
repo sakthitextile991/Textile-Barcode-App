@@ -5,12 +5,12 @@ from rest_framework.decorators import action,api_view, permission_classes
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth import authenticate, login
+from rest_framework.permissions import IsAuthenticated
 from django.utils.dateparse import parse_date
 from django.db import transaction
 from django.db.models import Max, Sum, Q, F, Count
+
+from accounts.permissions import IsAdmin
 
 from .models import Fabric,Barcode,Roll, Dispatch
 from .serializer import FabricSerializer, RollSerializer, DispatchSerializer, DispatchRollSerializer
@@ -25,53 +25,6 @@ from datetime import timedelta
 
 from django.core.cache import cache
 
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def auth_check(request):
-
-    return Response({
-        "authenticated": True,
-        "username": request.user.username
-    })
-
-#Login
-@api_view(["POST"])
-@permission_classes([AllowAny])
-def login_view(request):
-
-    username = request.data.get("username")
-    password = request.data.get("password")
-
-    user = authenticate(
-        username=username,
-        password=password
-    )
-
-    if user:
-
-        login(request, user)
-
-        return Response({
-            "message": "Login Success"
-        })
-
-    return Response(
-        {"error": "Invalid credentials"},
-        status=401
-    )
-
-#Logout
-@api_view(["POST"])
-@permission_classes([IsAuthenticated])
-def logout_view(request):
-
-    refresh_token = request.data["refresh"]
-    token = RefreshToken(refresh_token)
-    token.blacklist()
-
-    return Response({
-        "message": "Logged out"
-    })
 
 class DispatchPagination(PageNumberPagination): # Serve-side pagination done in Dispatch list section
     page_size = 7
@@ -224,6 +177,17 @@ class RollViewSet(ModelViewSet):
     queryset = Roll.objects.all()
     serializer_class = RollSerializer
     permission_classes = [IsAuthenticated]
+    
+    ADMIN_ACTIONS = (
+        "destroy",
+        "update",
+        "partial_update",
+    )
+    
+    def get_permissions(self):
+        if self.action in self.ADMIN_ACTIONS:
+            return [IsAdmin()]
+        return [IsAuthenticated()]
 
     def perform_create(self,serializer):
 

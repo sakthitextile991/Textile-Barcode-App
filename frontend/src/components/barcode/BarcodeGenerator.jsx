@@ -512,11 +512,6 @@ function BarcodeGenerator() {
         <button
           ref={generateRef}
           onClick={handleGenerate}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              handleGenerate();
-            }
-          }}
           className="
           bg-blue-900
           text-white

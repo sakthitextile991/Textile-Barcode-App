@@ -1,5 +1,6 @@
 import { Printer, Trash2, ChevronLeft, ChevronRight, Pencil } from "lucide-react";
 import { useEffect, useState } from "react";
+import DeleteBarcodeDialog from "./DeleteBarcodeDialog";
 import api from "../../services/api";
 
 const BarcodeTable = ({
@@ -14,6 +15,12 @@ const BarcodeTable = ({
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentItems = data.slice(startIndex, endIndex);
+
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [selectedBarcode, setSelectedBarcode] = useState(null);
+
+  const user = JSON.parse(localStorage.getItem("user"));
+  const isAdmin = user?.role?.toLowerCase() === "admin";
 
 
   {/*Visible page slider*/}
@@ -56,28 +63,26 @@ const BarcodeTable = ({
   };
 
 
-  const handleDelete = async (id) => {
+  const deleteBarcode = async (id) => {
 
-    const confirmDelete = window.confirm(
-      "Delete this barcode?"
+  try {
+
+    await api.delete(`barcode/${id}/`);
+
+    setData(prev =>
+      prev.filter(item => item.id !== id)
     );
 
-    if (!confirmDelete) return;
+    setDeleteOpen(false);
+    setSelectedBarcode(null);
 
-    try {
+  } catch (err) {
 
-      await api.delete(`barcode/${id}/`);
-
-      setData(prev =>
-        prev.filter(item => item.id !== id)
-      );
-
-    }
-    catch (err) {
-      alert("Deletion failed");
-    }
+    alert("Deletion failed");
 
   }
+
+};
 
   {/*API to get the barcodes to display below */ }
   useEffect(() => {
@@ -222,24 +227,31 @@ const BarcodeTable = ({
                         />
                       </button>
                       
-                      <button
-                        onClick={() => onEdit(item)}
-                        title="Edit"
-                      >
-                        <Pencil
-                          size={18}
-                          className="text-green-600"
-                        />
-                      </button>
+                      { isAdmin && (
+                        <>
+                          <button
+                            onClick={() => onEdit(item)}
+                            title="Edit"
+                          >
+                            <Pencil
+                              size={18}
+                              className="text-green-600"
+                            />
+                          </button>
 
-                      <button
-                        onClick={() => handleDelete(item.id)}
-                      >
-                        <Trash2
-                          size={18}
-                          className="text-red-600"
-                        />
-                      </button>
+                          <button
+                            onClick={() => {
+                              setSelectedBarcode(item);
+                              setDeleteOpen(true);
+                            }}
+                          >
+                            <Trash2
+                              size={18}
+                              className="text-red-600"
+                            />
+                          </button>
+                        </>
+                      )}
 
                     </div>
 
@@ -250,6 +262,16 @@ const BarcodeTable = ({
               ))
 
             )}
+
+            <DeleteBarcodeDialog
+                open={deleteOpen}
+                barcode={selectedBarcode}
+                onClose={() => {
+                    setDeleteOpen(false);
+                    setSelectedBarcode(null);
+                }}
+                onConfirm={deleteBarcode}
+            />
 
           </tbody>
 

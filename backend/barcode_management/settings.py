@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     'inventory',
+    'accounts',
 ]
 
 CACHES = {
@@ -72,6 +73,7 @@ MIDDLEWARE = [
 
 ]
 
+AUTH_USER_MODEL = "accounts.User"
 
 ROOT_URLCONF = 'barcode_management.urls'
 
@@ -104,7 +106,7 @@ DATABASES = {
         'USER': tmpPostgres.username,
         'PASSWORD': tmpPostgres.password,
         'HOST': tmpPostgres.hostname,
-        'PORT': 5432,
+        'PORT': os.getenv("DB_PORT"),
         'OPTION': dict(parse_qsl(tmpPostgres.query)),
     }
 }
