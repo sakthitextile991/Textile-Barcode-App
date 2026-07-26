@@ -42,7 +42,7 @@ const Login = () => {
 
     try {
       const res = await api.post(
-        "login/",
+        "accounts/login/",
         {
           username: formData.username,
           password: formData.password,
@@ -62,6 +62,11 @@ const Login = () => {
       localStorage.setItem(
         "refresh",
         res.data.refresh
+      );
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(res.data.user)
       );
 
       navigate("/");

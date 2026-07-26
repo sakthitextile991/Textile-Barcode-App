@@ -30,7 +30,8 @@ api.interceptors.response.use(
 
     if (
       error.response?.status === 401 &&
-      !originalRequest._retry
+      !originalRequest._retry &&
+      !originalRequest.url.includes("/accounts/refresh/")
     ) {
 
       originalRequest._retry = true;
@@ -44,7 +45,7 @@ api.interceptors.response.use(
 
         console.log("401 detected");
         const res = await axios.post(
-          `${import.meta.env.VITE_API_URL}/api/token/refresh/`,
+          `${import.meta.env.VITE_API_URL}/api/accounts/refresh/`,
           {
             refresh,
           }
@@ -79,6 +80,7 @@ api.interceptors.response.use(
 
         localStorage.removeItem("access");
         localStorage.removeItem("refresh");
+        localStorage.removeItem("user");
 
         window.location.href = "/login";
 

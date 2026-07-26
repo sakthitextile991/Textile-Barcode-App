@@ -9,9 +9,9 @@ const ProtectedRoute = () => {
 
   useEffect(() => {
 
-    api.get("auth/check/")
+    api.get("accounts/me/")
       .then((res) => {
-        setAuthenticated(res.data.authenticated);
+        setAuthenticated(true);
       })
       .catch(() => {
         setAuthenticated(false);

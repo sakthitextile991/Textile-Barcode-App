@@ -18,7 +18,8 @@ function Navbar() {
   const [showMenu, setShowMenu] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const username = "sakthi_textile";
+  const user = JSON.parse(localStorage.getItem("user"));
+  const username = user?.username;
 
   const navItems = [
     { name: "Home", path: "/" },
@@ -31,7 +32,7 @@ function Navbar() {
 
     try {
 
-      await api.post("logout/", {
+      await api.post("accounts/logout/", {
         refresh: localStorage.getItem("refresh"),
       });
 
@@ -43,6 +44,7 @@ function Navbar() {
 
     localStorage.removeItem("access");
     localStorage.removeItem("refresh");
+    localStorage.removeItem("user");
 
     navigate("/login");
 

@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
 import { useParams } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 
 function DispatchDC() {
 
   const { id } = useParams();
   const navigate = useNavigate();
-  const [dispatch, setDispatch] =
-    useState(null);
+  const [dispatch, setDispatch] = useState(null);
 
   useEffect(() => {
 
@@ -58,6 +58,34 @@ function DispatchDC() {
 
   return (
     <>
+      <div className="max-w-[1200px] mx-auto mt-6 mb-4">
+
+        <button
+          onClick={() => navigate("/dispatch")}
+          className="
+            flex
+            items-center
+            gap-2
+            px-4
+            py-2
+            bg-white
+            border
+            border-slate-300
+            rounded-xl
+            shadow-sm
+            text-slate-700
+            hover:bg-slate-100
+            hover:border-blue-600
+            hover:text-blue-700
+            transition
+          "
+        >
+          <ArrowLeft size={18} />
+            Back to Dispatch
+        </button>
+
+      </div>
+
       {pages.map(
         (
           pageRolls,
