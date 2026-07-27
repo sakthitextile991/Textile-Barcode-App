@@ -10,5 +10,5 @@ class IsAdmin(BasePermission):
 
         return (
             request.user.is_authenticated
-            and request.user.role.upper() == "ADMIN"
+            and request.user.profile.role.upper() == "ADMIN"
         )

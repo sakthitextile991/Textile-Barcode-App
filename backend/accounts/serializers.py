@@ -7,7 +7,7 @@ class CustomTokenSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
         token = super().get_token(user)
 
-        token["role"] = user.role
+        token["role"] = user.profile.role
         token["username"] = user.username
 
         return token
@@ -18,7 +18,7 @@ class CustomTokenSerializer(TokenObtainPairSerializer):
         data["user"] = {
             "id": self.user.id,
             "username": self.user.username,
-            "role": self.user.role,
+            "role": self.user.profile.role,
         }
 
         return data

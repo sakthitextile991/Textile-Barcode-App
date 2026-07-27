@@ -73,8 +73,6 @@ MIDDLEWARE = [
 
 ]
 
-AUTH_USER_MODEL = "accounts.User"
-
 ROOT_URLCONF = 'barcode_management.urls'
 
 TEMPLATES = [
@@ -107,7 +105,7 @@ DATABASES = {
         'PASSWORD': tmpPostgres.password,
         'HOST': tmpPostgres.hostname,
         'PORT': os.getenv("DB_PORT"),
-        'OPTION': dict(parse_qsl(tmpPostgres.query)),
+        'OPTIONS': dict(parse_qsl(tmpPostgres.query)),
     }
 }
 
