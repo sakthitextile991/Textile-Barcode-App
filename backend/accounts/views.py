@@ -21,7 +21,7 @@ class CurrentUserView(APIView):
         return Response({
             "id": request.user.id,
             "username": request.user.username,
-            "role": request.user.role,
+            "role": request.user.profile.role,
         })
 
 class LogoutView(APIView):

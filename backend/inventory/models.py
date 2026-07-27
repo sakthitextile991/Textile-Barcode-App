@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 
 class Fabric(models.Model):
-    type = models.CharField(max_length=50)
+    type = models.CharField(max_length=50, unique=True)
     stock = models.IntegerField(default=0)
 
     def __str__(self):
