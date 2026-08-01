@@ -9,50 +9,6 @@ import UserFormModal from "../components/users/UserFormModal";
 import DeleteUserModal from "../components/users/DeleteUserModal";
 
 
-const initialUsers = [
-    {
-        id: 1,
-        username: "admin",
-        first_name: "System",
-        last_name: "Administrator",
-        email: "admin@example.com",
-        role: "ADMIN",
-        is_active: true,
-        date_joined: "2026-07-01",
-    },
-    {
-        id: 2,
-        username: "sakthi_textile",
-        first_name: "Sakthi",
-        last_name: "Textile",
-        email: "sakthi@example.com",
-        role: "USER",
-        is_active: true,
-        date_joined: "2026-07-10",
-    },
-    {
-        id: 3,
-        username: "production_user",
-        first_name: "Production",
-        last_name: "Team",
-        email: "production@example.com",
-        role: "USER",
-        is_active: false,
-        date_joined: "2026-07-14",
-    },
-    {
-        id: 4,
-        username: "warehouse_admin",
-        first_name: "Warehouse",
-        last_name: "Admin",
-        email: "warehouse@example.com",
-        role: "ADMIN",
-        is_active: true,
-        date_joined: "2026-07-20",
-    },
-];
-
-
 function UserManagement() {
 
     const [users, setUsers] = useState([]);
@@ -324,7 +280,7 @@ function UserManagement() {
         <DashbordLayout>
             <main className="min-h-screen bg-slate-50p-4 sm:p-6lg:p-8">
                 
-                <div className="">
+                <div>
 
                     {/* Header */}
                     <div
