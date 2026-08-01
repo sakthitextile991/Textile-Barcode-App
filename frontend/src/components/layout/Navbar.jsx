@@ -5,6 +5,7 @@ import {
   LogOut,
   Menu,
   X,
+  Users,
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../assets/sakthi_textile_logo.png";
@@ -20,6 +21,8 @@ function Navbar() {
 
   const user = JSON.parse(localStorage.getItem("user"));
   const username = user?.username;
+  const userRole = user?.role?.charAt(0).toUpperCase() + user?.role?.slice(1).toLowerCase(); // Converts ADMIN to Admin && USER to User
+  const isAdmin = user?.role === "ADMIN";
 
   const navItems = [
     { name: "Home", path: "/" },
@@ -167,11 +170,57 @@ function Navbar() {
                     Signed in as
                   </p>
 
-                  <p className="font-semibold">
+                  <div className="flex items-center justify-between gap-4">
+
+                  <p className="font-semibold text-slate-800">
                     {username}
                   </p>
 
+                  <span
+                    className={`
+                      rounded-full
+                      px-3
+                      py-1
+                      text-xs
+                      font-semibold
+                      ${
+                        isAdmin
+                          ? "bg-purple-100 text-purple-700"
+                          : "bg-blue-100 text-blue-700"
+                      }
+                    `}
+                  >
+                    {user?.role}
+                  </span>
+
                 </div>
+
+                </div>
+
+                {isAdmin && (
+
+                  <Link
+                    to="/users"
+                    onClick={() => setShowMenu(false)}
+                    className="
+                      w-full
+                      px-4
+                      py-3
+                      flex
+                      items-center
+                      gap-3
+                      text-slate-700
+                      hover:bg-blue-50
+                      hover:text-blue-700
+                      transition
+                    "
+                  >
+                    <Users size={18} />
+                    User Management
+
+                  </Link>
+
+                )}
 
                 <button
                   onClick={handleLogout}

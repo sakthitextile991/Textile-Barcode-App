@@ -1,4 +1,4 @@
-import { Printer, Trash2, ChevronLeft, ChevronRight, Pencil } from "lucide-react";
+import { Printer, Trash2, ChevronLeft, ChevronRight, Pencil, Search} from "lucide-react";
 import { useEffect, useState } from "react";
 import DeleteBarcodeDialog from "./DeleteBarcodeDialog";
 import api from "../../services/api";
@@ -9,12 +9,20 @@ const BarcodeTable = ({
   onEdit,
 }) => {
   const [data, setData] = useState([]);
+  const [search, setSearch] = useState("");
+  const filteredData = data.filter((item) =>
+    String(item.roll_no || "")
+      .toLowerCase()
+      .startsWith(search.toLowerCase())
+  );
+
+  //Pagination
   const ITEMS_PER_PAGE = 5;
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(data.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(filteredData.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentItems = data.slice(startIndex, endIndex);
+  const currentItems = filteredData.slice(startIndex, endIndex);
 
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [selectedBarcode, setSelectedBarcode] = useState(null);
@@ -117,7 +125,7 @@ const BarcodeTable = ({
   useEffect(() => {
 
     const pages = Math.ceil(
-      data.length / ITEMS_PER_PAGE
+      filteredData.length / ITEMS_PER_PAGE
     );
 
     if (
@@ -138,13 +146,46 @@ const BarcodeTable = ({
         Generated Barcodes
       </h2>
 
+      <div className="mb-6 relative max-w-md">
+
+        <Search
+          size={18}
+          className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+        />
+
+        <input
+          type="text"
+          value={search}
+          onChange={(event) => {
+      
+            setSearch(event.target.value);
+            setCurrentPage(1);
+          }}
+          placeholder="Search by roll number..."
+          className="
+            w-full
+            rounded-xl
+            border
+            border-slate-300
+            py-3
+            pl-11
+            pr-4
+            outline-none
+            transition
+            focus:border-blue-600
+            focus:ring-2
+            focus:ring-blue-100
+          "
+        />
+      </div>
+
       <div className="overflow-x-auto bg-white rounded-xl shadow">
 
         <table className="w-full">
 
           <thead>
 
-            <tr className="bg-blue-900 text-white">
+            <tr className="text-xs bg-blue-900 text-white uppercase">
 
               <th className="p-4 text-left">
                 Barcode
@@ -172,7 +213,7 @@ const BarcodeTable = ({
 
           <tbody>
 
-            {data.length === 0 ? (
+            {filteredData.length === 0 ? (
 
               <tr>
 
@@ -184,7 +225,10 @@ const BarcodeTable = ({
                     text-slate-500
                   "
                 >
-                  No barcodes generated yet
+                  {search
+                    ? "No barcode found for this roll number"
+                    : "No barcodes generated yet"
+                  }
                 </td>
 
               </tr>
@@ -279,7 +323,7 @@ const BarcodeTable = ({
 
       </div>
 
-      {data.length > 0 && (
+      {filteredData.length > 0 && (
 
         <div className="flex items-center justify-between mt-6">
           <p className="text-slate-600">
@@ -289,14 +333,15 @@ const BarcodeTable = ({
 
             {" "}to{" "}
 
-            {Math.min(endIndex, data.length)}
+            {Math.min(endIndex, filteredData.length)}
 
             {" "}of{" "}
 
-            {data.length}
+            {filteredData.length}
 
             {" "} items
           </p>
+          
           <div className="flex items-center gap-3">
             <button 
               onClick={goPrevGroup}

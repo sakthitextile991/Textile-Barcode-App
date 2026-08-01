@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ProtectedRoute from "../components/auth/ProtectedRoute";
+import AdminRoute from "../components/auth/AdminRoute";
 
 import Home from "../pages/Home";
 import Barcode from "../pages/Barcode";
@@ -12,6 +13,7 @@ import Stocks from "../pages/Stocks";
 import DispatchPreview from "../pages/DispatchPreview";
 import FabricRolls from "../components/fabric/FabricRolls";
 import DispatchDC from "../components/dispatch/DispatchDC";
+import UserManagement from "../pages/UserManagement";
 
 function AppRouter() {
   return (
@@ -38,6 +40,11 @@ function AppRouter() {
           <Route path="/dispatch/preview" element={<DispatchPreview />} />
           <Route path="/dispatch/:id" element={<DispatchDC />} />
           <Route path="/fabric-rolls/:id" element={<FabricRolls />} />
+
+          <Route element={<AdminRoute />}>
+            <Route path="/users" element={<UserManagement />} />
+          </Route>
+          
         </Route>
 
       </Routes>

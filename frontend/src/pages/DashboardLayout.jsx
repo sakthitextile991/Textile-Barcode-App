@@ -27,7 +27,10 @@ function DashboardLayout({ children }) {
         <Navbar />
 
         <main className="p-3 md:p-8">
-          {children}
+          <div className="mx-auto max-w-7xl">
+          { children}
+          </div>
+
         </main>
 
       </div>

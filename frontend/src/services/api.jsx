@@ -28,9 +28,12 @@ api.interceptors.response.use(
 
     const originalRequest = error.config;
 
+    const isLoginRequest = originalRequest.url.includes("accounts/login/");
+
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
+      !isLoginRequest &&
       !originalRequest.url.includes("/accounts/refresh/")
     ) {
 

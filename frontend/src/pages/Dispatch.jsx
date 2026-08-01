@@ -94,7 +94,7 @@ function Dispatch() {
           {/* Header */}
           <div className="flex justify-between items-center mb-8">
 
-            <h1 className="text-3xl font-bold text-blue-700">
+            <h1 className="text-3xl font-bold text-slate-900">
               Dispatch List
             </h1>
 
@@ -198,8 +198,7 @@ function Dispatch() {
 
               <thead>
 
-                <tr className="bg-blue-900
-                text-white ">
+                <tr className="bg-blue-900 text-white text-xs uppercase">
 
                   <th className="p-4 text-left font-semibold">
                     Dispatch No
