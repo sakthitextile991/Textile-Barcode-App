@@ -154,46 +154,49 @@ function Navbar() {
                   absolute
                   right-0
                   top-14
-                  w-56
+                  z-50
+                  w-73
+                  max-w-[calc(100vw-2rem)]
+                  overflow-hidden
                   bg-white
                   rounded-xl
                   shadow-lg
                   border
                   border-slate-200
-                  z-50
                 "
               >
 
-                <div className="px-4 py-3 border-b">
+                <div className="px-4 py-3 border-b border-slate-200">
 
-                  <p className="text-sm text-slate-500">
+                  <p className="mb-1 text-sm text-slate-500">
                     Signed in as
                   </p>
 
                   <div className="flex items-center justify-between gap-4">
 
-                  <p className="font-semibold text-slate-800">
-                    {username}
-                  </p>
+                    <p className="min-w-0 flex-1 truncate font-semibold text-slate-800">
+                      {username}
+                    </p>
 
-                  <span
-                    className={`
-                      rounded-full
-                      px-3
-                      py-1
-                      text-xs
-                      font-semibold
-                      ${
-                        isAdmin
-                          ? "bg-purple-100 text-purple-700"
-                          : "bg-blue-100 text-blue-700"
-                      }
-                    `}
-                  >
-                    {user?.role}
-                  </span>
+                    <span
+                      className={`
+                        shrink-0
+                        rounded-full
+                        px-3
+                        py-1
+                        text-xs
+                        font-semibold
+                        ${
+                          isAdmin
+                            ? "bg-purple-100 text-purple-700"
+                            : "bg-blue-100 text-blue-700"
+                        }
+                      `}
+                    >
+                      {userRole}
+                    </span>
 
-                </div>
+                  </div>
 
                 </div>
 

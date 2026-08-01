@@ -226,26 +226,27 @@ const StockTable = () => {
 
               <tr
                 className="
-                  text-xs
                   bg-blue-900
                   text-white
+                  text-[15px]
                   uppercase
+                  
                 "
               >
-                <th className="p-4 text-left">
+                <th className="p-4 text-left font-semibold">
                   Fabric Name
                 </th>
 
-                <th className="p-4 text-left">
+                <th className="p-4 text-left font-semibold">
                   Meters
                 </th>
 
-                <th className="p-4 text-left">
+                <th className="p-4 text-left font-semibold">
                   No of Rolls
                 </th>
 
-                <th className="p-4 text-center">
-                  View
+                <th className="p-4 text-center font-semibold">
+                  Action
                 </th>
               </tr>
 

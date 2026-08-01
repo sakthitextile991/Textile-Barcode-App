@@ -28,93 +28,30 @@ function UserTable({
 
         <thead>
 
-          <tr className="bg-blue-900 text-white">
+          <tr className="text-[15px] bg-blue-900 text-white uppercase">
 
-            <th
-              className="
-                px-6
-                py-4
-                text-left
-                text-xs
-                font-bold
-                rounded-tl-xl
-                uppercase
-                tracking-wider
-                
-              "
-            >
-
+            <th className="px-6 py-4 text-left font-semibold tracking-wider">
               User
-
             </th>
 
 
-            <th
-              className="
-                px-6
-                py-4
-                text-left
-                text-xs
-                font-bold
-                uppercase
-                tracking-wider
-              "
-            >
-
+            <th className="px-6 py-4 text-left font-semibold tracking-wider">
               Role
-
             </th>
 
 
-            <th
-              className="
-                px-6
-                py-4
-                text-left
-                text-xs
-                font-bold
-                uppercase
-                tracking-wider
-              "
-            >
-
+            <th className="px-6 py-4 text-left font-semibold tracking-wider">
               Status
-
             </th>
 
 
-            <th
-              className="
-                px-6
-                py-4
-                text-left
-                text-xs
-                font-bold
-                uppercase
-                tracking-wider
-              "
-            >
-
+            <th className="px-6 py-4 text-left font-semibold tracking-wider">
               Joined
-
             </th>
 
 
-            <th
-              className="
-                px-6
-                py-4
-                text-center
-                text-xs
-                font-bold
-                rounded-tr-xl
-                uppercase
-                tracking-wider
-              "
-            >
-
+            <th className="px-6 py-4 text-right font-semibold tracking-wider">
               Actions
-
             </th>
 
           </tr>

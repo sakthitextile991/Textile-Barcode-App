@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import DashboardLayout from "./DashboardLayout";
 import api from "../services/api";
 
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Eye } from "lucide-react";
 import { format } from "date-fns";
 
 import { Calendar } from "@/components/ui/calendar";
@@ -198,7 +198,7 @@ function Dispatch() {
 
               <thead>
 
-                <tr className="bg-blue-900 text-white text-xs uppercase">
+                <tr className="bg-blue-900 text-white text-[15px] uppercase">
 
                   <th className="p-4 text-left font-semibold">
                     Dispatch No
@@ -224,7 +224,7 @@ function Dispatch() {
                     Date
                   </th>
 
-                  <th className="p-4 text-center font-semibold">
+                  <th className="p-4 text-left font-semibold">
                     Action
                   </th>
 
@@ -280,15 +280,21 @@ function Dispatch() {
                         )
                       }
                         className="
-                          bg-blue-700
+                          flex
+                          items-center
+                          gap-1
+                          bg-blue-600
                           text-white
-                          px-4
+                          text-[14px]
+                          font-semibold
+                          px-3
                           py-2
                           rounded-lg
-                          hover:bg-blue-800
+                          hover:bg-blue-700
                           transition
                         "
                       >
+                        <Eye size={14} />
                         View
                       </button>
 

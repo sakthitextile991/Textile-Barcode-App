@@ -167,19 +167,19 @@ const DispatchCard = () => {
             
             {/* Fabric Icon */}
 
-            <div className="w-full lg:w-auto p-6 md:p-10 flex flex-col items-center bg-amber-100 rounded-xl ">
+            <div className="w-full lg:h-[260px] lg:w-[300px] min-h-[190px] px-6 py-5 flex flex-col items-center justify-center bg-amber-100 rounded-xl">
 
-              <div className=" text-5xl md:text-8xl">
+              <div className=" text-4xl md:text-6xl">
                 {icon[currentIndex % icon.length].emoji}
               </div>
 
-              <div className="mt-3 text-center">
+              <div className="mt-4 text-center">
 
-                <p className="font-bold text-lg">
+                <p className="max-w-[260px] text-center text-base font-bold leading-6 break-words line-clamp-2">
                   {current?.fabric_name}
                 </p>
 
-                <p className="text-sm text-slate-500">
+                <p className="mt-1 text-sm text-slate-500">
                   Fabric Type
                 </p>
 
