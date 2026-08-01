@@ -1,12 +1,10 @@
-import React, { useState } from "react";
-import { FaUser, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
+import { useState } from "react";
+import { FaUser, FaLock } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 
 const Login = () => {
   const navigate = useNavigate();
-
-  const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
     username: "",
@@ -14,211 +12,444 @@ const Login = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [loginError, setLoginError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+
+    setFormData((previousData) => ({
+      ...previousData,
+      [name]: value,
+    }));
+
+    // Remove the error for the field currently being edited
+    setErrors((previousErrors) => ({
+      ...previousErrors,
+      [name]: "",
+    }));
+
+    // Remove backend error when the user starts typing again
+    setLoginError("");
   };
 
-  const handleLogin = async () => {
+  const handleLogin = async (event) => {
+    // Prevent the browser from submitting the form
+    event.preventDefault();
 
-    let newErrors = {};
+    const newErrors = {};
 
     if (!formData.username.trim()) {
-      newErrors.username = "Username is required";
+      newErrors.username = "Username is required.";
     }
 
     if (!formData.password.trim()) {
-      newErrors.password = "Password is required";
+      newErrors.password = "Password is required.";
     }
 
     setErrors(newErrors);
 
+    // Stop if frontend validation fails
     if (Object.keys(newErrors).length > 0) {
       return;
     }
 
     try {
-      const res = await api.post(
+      setIsLoading(true);
+      setLoginError("");
+
+      const response = await api.post(
         "accounts/login/",
         {
-          username: formData.username,
+          username: formData.username.trim(),
           password: formData.password,
-        },
-        {
-          withCredentials: true,
         }
       );
 
-      console.log(res.data);
-
+      // Store JWT tokens
       localStorage.setItem(
         "access",
-        res.data.access
+        response.data.access
       );
 
       localStorage.setItem(
         "refresh",
-        res.data.refresh
+        response.data.refresh
       );
 
+      // Store logged-in user information
       localStorage.setItem(
         "user",
-        JSON.stringify(res.data.user)
+        JSON.stringify(response.data.user)
       );
 
-      navigate("/");
+      // Navigate only after successful login
+      navigate("/", {
+        replace: true,
+      });
 
-    } catch (err) {
-      
-      alert(
-        err.response?.data?.detail ||
-        "Login Failed"
+    } catch (error) {
+      console.error(
+        "Login failed:",
+        error
       );
 
+      const responseData = error.response?.data;
+
+      // Simple JWT normally returns the error in "detail"
+      const backendMessage =
+        responseData?.detail ||
+        responseData?.error ||
+        responseData?.message;
+
+      if (
+        backendMessage ===
+        "No active account found with the given credentials"
+      ) {
+        setLoginError(
+          "Invalid username or password."
+        );
+      } else {
+        setLoginError(
+          backendMessage ||
+          "Unable to sign in. Please try again."
+        );
+      }
+
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-        background: "linear-gradient(135deg,#eef2ff,#f8fafc)",
-      }}
+    <main
+      className="
+        min-h-screen
+        flex
+        items-center
+        justify-center
+        bg-gradient-to-br
+        from-blue-50
+        via-slate-50
+        to-indigo-100
+        px-4
+        py-8
+      "
     >
-      <div
-        style={{
-          width: "380px",
-          background: "#fff",
-          padding: "45px 35px",
-          borderRadius: "18px",
-          boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
-          display: "flex",
-          flexDirection: "column",
-          gap: "10px",
-        }}
+      <section
+        className="
+          w-full
+          max-w-md
+          rounded-3xl
+          border
+          border-slate-200
+          bg-white
+          p-7
+          shadow-xl
+          sm:p-10
+        "
       >
-        <h1
-          style={{
-            textAlign: "center",
-            marginBottom: "20px",
-          }}
-        >
-          Login
-        </h1>
+        {/* Heading */}
 
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            border: "1px solid #999",
-            borderRadius: "8px",
-            padding: "0 10px",
-          }}
-        >
-          <FaUser color="#666" />
+        <div className="mb-8 text-center">
 
-          <input
-            type="text"
-            name="username"
-            placeholder="Username"
-            value={formData.username}
-            onChange={handleChange}
-            style={{
-              flex: 1,
-              height: "38px",
-              border: "none",
-              outline: "none",
-              marginLeft: "10px",
-            }}
-          />
-        </div>
-
-        {errors.username && (
-          <p style={{ color: "red", fontSize: "12px" }}>
-            {errors.username}
-          </p>
-        )}
-
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            border: "1px solid #999",
-            borderRadius: "8px",
-            padding: "0 10px",
-          }}
-        >
-          <FaLock color="#666" style={{
-    minWidth: "18px",
-    fontSize: "16px",
-    flexShrink: 0,
-  }} />
-
-          <input
-            type={
-              showPassword
-                ? "text"
-                : "password"
-            }
-            name="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-            style={{
-              flex: 1,
-              height: "38px",
-              border: "none",
-              outline: "none",
-              marginLeft: "10px",
-            }}
-          />
-
-          <span
-            onClick={() =>
-              setShowPassword(!showPassword)
-            }
-            style={{
-              cursor: "pointer",
-            }}
+          <div
+            className="
+              mx-auto
+              mb-5
+              flex
+              h-16
+              w-16
+              items-center
+              justify-center
+              rounded-2xl
+              bg-blue-700
+              shadow-lg
+              shadow-blue-200
+            "
           >
-            {showPassword
-              ? <FaEyeSlash />
-              : <FaEye />}
-          </span>
+            <FaUser
+              className="
+                text-2xl
+                text-white
+              "
+            />
+          </div>
+
+          <h1
+            className="
+              text-3xl
+              font-bold
+              text-blue-950
+            "
+          >
+            Welcome Back
+          </h1>
+
+          <p
+            className="
+              mt-2
+              text-sm
+              text-slate-500
+            "
+          >
+            Sign in to access the
+            Sakthi Textiles system.
+          </p>
+
         </div>
 
-        {errors.password && (
-          <p style={{ color: "red", fontSize: "12px" }}>
-            {errors.password}
-          </p>
-        )}
+        {/* Login form */}
 
-        <button
-          onClick={handleLogin}
-          style={{
-            alignSelf: "center",
-            width: "100px",
-            height: "38px",
-            marginTop: "10px",
-            border: "none",
-            borderRadius: "20px",
-            background: "#1d5fa8",
-            color: "#fff",
-            cursor: "pointer",
-            boxShadow:
-              "0 4px 12px rgba(29,95,168,0.4)",
-          }}
+        <form
+          onSubmit={handleLogin}
+          noValidate
+          className="
+            space-y-5
+          "
         >
-          Sign In
-        </button>
-      </div>
-    </div>
+
+          {/* Backend login error */}
+
+          {loginError && (
+
+            <div
+              role="alert"
+              className="
+                rounded-xl
+                border
+                border-red-200
+                bg-red-50
+                px-4
+                py-3
+                text-center
+                text-sm
+                font-medium
+                text-red-600
+              "
+            >
+              {loginError}
+            </div>
+
+          )}
+
+          {/* Username */}
+
+          <div>
+
+            <label
+              htmlFor="username"
+              className="
+                mb-2
+                block
+                text-sm
+                font-semibold
+                text-slate-700
+              "
+            >
+              Username
+            </label>
+
+            <div
+              className={`
+                flex
+                items-center
+                rounded-xl
+                border
+                bg-white
+                px-4
+                transition
+                focus-within:ring-4
+                ${
+                  errors.username
+                    ? `
+                      border-red-400
+                      focus-within:border-red-500
+                      focus-within:ring-red-100
+                    `
+                    : `
+                      border-slate-300
+                      focus-within:border-blue-600
+                      focus-within:ring-blue-100
+                    `
+                }
+              `}
+            >
+
+              <FaUser
+                className="
+                  shrink-0
+                  text-slate-400
+                "
+              />
+
+              <input
+                id="username"
+                type="text"
+                name="username"
+                placeholder="Enter your username"
+                value={formData.username}
+                onChange={handleChange}
+                autoComplete="username"
+                disabled={isLoading}
+                className="
+                  h-12
+                  w-full
+                  bg-transparent
+                  pl-3
+                  text-slate-800
+                  outline-none
+                  placeholder:text-slate-400
+                  disabled:cursor-not-allowed
+                "
+              />
+
+            </div>
+
+            {errors.username && (
+
+              <p
+                className="
+                  mt-2
+                  text-xs
+                  font-medium
+                  text-red-600
+                "
+              >
+                {errors.username}
+              </p>
+
+            )}
+
+          </div>
+
+          {/* Password */}
+
+          <div>
+
+            <label
+              htmlFor="password"
+              className="
+                mb-2
+                block
+                text-sm
+                font-semibold
+                text-slate-700
+              "
+            >
+              Password
+            </label>
+
+            <div
+              className={`
+                flex
+                items-center
+                rounded-xl
+                border
+                bg-white
+                px-4
+                transition
+                focus-within:ring-4
+                ${
+                  errors.password
+                    ? `
+                      border-red-400
+                      focus-within:border-red-500
+                      focus-within:ring-red-100
+                    `
+                    : `
+                      border-slate-300
+                      focus-within:border-blue-600
+                      focus-within:ring-blue-100
+                    `
+                }
+              `}
+            >
+
+              <FaLock
+                className="
+                  shrink-0
+                  text-slate-400
+                "
+              />
+
+              <input
+                id="password"
+                type="password"
+                name="password"
+                placeholder="Enter your password"
+                value={formData.password}
+                onChange={handleChange}
+                autoComplete="current-password"
+                disabled={isLoading}
+                className="
+                  h-12
+                  w-full
+                  bg-transparent
+                  pl-3
+                  text-slate-800
+                  outline-none
+                  placeholder:text-slate-400
+                  disabled:cursor-not-allowed
+                "
+              />
+
+            </div>
+
+            {errors.password && (
+
+              <p
+                className="
+                  mt-2
+                  text-xs
+                  font-medium
+                  text-red-600
+                "
+              >
+                {errors.password}
+              </p>
+
+            )}
+
+          </div>
+
+          {/* Submit button */}
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="
+              flex
+              h-12
+              w-full
+              items-center
+              justify-center
+              rounded-xl
+              bg-blue-700
+              font-semibold
+              text-white
+              shadow-lg
+              shadow-blue-200
+              transition
+              hover:bg-blue-800
+              hover:shadow-xl
+              focus:outline-none
+              focus:ring-4
+              focus:ring-blue-200
+              disabled:cursor-not-allowed
+              disabled:opacity-60
+            "
+          >
+            {isLoading
+              ? "Signing in..."
+              : "Sign In"
+            }
+          </button>
+
+        </form>
+
+      </section>
+    </main>
   );
 };
 

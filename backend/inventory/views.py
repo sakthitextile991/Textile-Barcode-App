@@ -34,6 +34,19 @@ class FabricViewSet(ModelViewSet):
     queryset = Fabric.objects.all()
     serializer_class = FabricSerializer
     permission_classes = [IsAuthenticated]
+    ADMIN_ACTIONS = (
+        "destroy",
+        "update",
+        "partial_update",
+    )
+
+    def get_permissions(self):
+
+        if self.action in self.ADMIN_ACTIONS:
+            return [IsAdmin()]
+
+        return [IsAuthenticated()]
+    
 
     def list(self, request, *args, **kwargs):
 
@@ -71,7 +84,18 @@ class FabricViewSet(ModelViewSet):
         
         #cache delete (when fabric created it affects the stock distribution)
         clear_stock_caches()
-        
+
+    def perform_update(self, serializer):
+
+        serializer.save()
+
+        # Clear the cached fabric list
+        cache.delete("fabric_list")
+        cache.delete("dashboard_chart")
+
+        # Clear stock-related caches
+        clear_stock_caches()
+
     
     @action( detail=False, methods=["get"] )
     def stock_distribution(self, request):
