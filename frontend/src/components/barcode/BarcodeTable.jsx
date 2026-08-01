@@ -185,25 +185,25 @@ const BarcodeTable = ({
 
           <thead>
 
-            <tr className="text-xs bg-blue-900 text-white uppercase">
+            <tr className="text-[15px] bg-blue-900 text-white uppercase">
 
-              <th className="p-4 text-left">
+              <th className="p-4 text-left font-semibold">
                 Barcode
               </th>
 
-              <th className="p-4 text-left">
+              <th className="p-4 text-left font-semibold">
                 Fabric
               </th>
 
-              <th className="p-4 text-left">
+              <th className="p-4 text-left font-semibold">
                 Meters
               </th>
 
-              <th className="p-4 text-left">
+              <th className="p-4 text-left font-semibold">
                 Weight
               </th>
 
-              <th className="p-4 text-center">
+              <th className="p-4 text-center font-semibold">
                 Actions
               </th>
 
