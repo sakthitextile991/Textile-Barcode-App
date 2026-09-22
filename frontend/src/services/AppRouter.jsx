@@ -14,6 +14,8 @@ import DispatchPreview from "../pages/DispatchPreview";
 import FabricRolls from "../components/fabric/FabricRolls";
 import DispatchDC from "../components/dispatch/DispatchDC";
 import UserManagement from "../pages/UserManagement";
+import Reports from "../pages/Reports";
+import ReportResult from "../pages/ReportResult";
 
 function AppRouter() {
   return (
@@ -40,6 +42,8 @@ function AppRouter() {
           <Route path="/dispatch/preview" element={<DispatchPreview />} />
           <Route path="/dispatch/:id" element={<DispatchDC />} />
           <Route path="/fabric-rolls/:id" element={<FabricRolls />} />
+          <Route path="/reports" element={<Reports />} />
+          <Route path="/reports/result" element={<ReportResult />} />
 
           <Route element={<AdminRoute />}>
             <Route path="/users" element={<UserManagement />} />

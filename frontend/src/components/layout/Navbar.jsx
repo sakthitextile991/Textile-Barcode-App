@@ -29,6 +29,7 @@ function Navbar() {
     { name: "Barcodes", path: "/barcode" },
     { name: "Stocks", path: "/stocks" },
     { name: "Dispatch", path: "/dispatch" },
+    { name: "Reports", path: "/reports" },
   ];
 
   const handleLogout = async () => {

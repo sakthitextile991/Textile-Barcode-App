@@ -335,8 +335,9 @@ class RollViewSet(ModelViewSet):
             buffer.getvalue(),
             content_type="image/png"
         )
-    
-    @action(detail=False, methods=["get"]) # Used in Barcode section to list out barcode
+
+    # Used in Barcode section to list out barcode
+    @action(detail=False, methods=["get"]) 
     def list_barcode(self, request):
 
         rolls = Roll.objects.filter(
