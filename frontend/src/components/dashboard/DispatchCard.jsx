@@ -58,35 +58,25 @@ const DispatchCard = () => {
   const current = dispatches[currentIndex];
 
 
-  const icon = [
-      {
-        emoji: "🧵",
-        bg: "bg-blue-50",
-        border: "border-blue-200",
-      },
-      {
-        emoji: "✨",
-        bg: "bg-green-50",
-        border: "border-green-200",
-      },
-      {
-        emoji: "🌾",
-        bg: "bg-yellow-50",
-        border: "border-yellow-200",
-      },
-      {
-        emoji: "👑",
-        bg: "bg-pink-50",
-        border: "border-pink-200",
-      },
-      {
-        emoji: "👖",
-        bg: "bg-indigo-50",
-        border: "border-indigo-200",
-      },
-    ];
+  const getInitials = (name) => {
+    if (!name) return "?";
 
+    const words = name.trim().split(/\s+/);
 
+    if (words.length === 1) {
+      return words[0].substring(0, 3).toUpperCase();
+    }
+
+    return words
+      .map((word) => word[0])
+      .join("")
+      .substring(0, 3)
+      .toUpperCase();
+  };
+
+  const customerInitials = getInitials(
+    current?.customer_name
+  );
 
     return (
 
@@ -165,25 +155,43 @@ const DispatchCard = () => {
 
             </div>
             
-            {/* Fabric Icon */}
+            {/* Customer Card */}
 
-            <div className="w-full lg:h-[260px] lg:w-[300px] min-h-[190px] px-6 py-5 flex flex-col items-center justify-center bg-amber-100 rounded-xl">
+            <div className="
+              w-full
+              lg:w-[220px]
+              min-h-[190px]
+              p-6 mt-8
+              flex
+              flex-col
+              items-center
+              justify-center
+              bg-blue-50
+              border-5
+              border-blue-200
+              shadow-md
+              rounded-2xl
+            ">
 
-              <div className=" text-4xl md:text-6xl">
-                {icon[currentIndex % icon.length].emoji}
+              <div className="w-24 h-24 rounded-full bg-blue-700 text-white flex items-center justify-center text-2xl font-bold">
+                {customerInitials}
               </div>
 
-              <div className="mt-4 text-center">
+              <p className="
+                mt-4
+                font-bold
+                text-lg
+                text-slate-800
+                text-center
+                max-w-[180px]
+                break-words
+              ">
+                {current?.customer_name}
+              </p>
 
-                <p className="max-w-[260px] text-center text-base font-bold leading-6 break-words line-clamp-2">
-                  {current?.fabric_name}
-                </p>
-
-                <p className="mt-1 text-sm text-slate-500">
-                  Fabric Type
-                </p>
-
-              </div>
+              <p className="text-sm text-slate-500">
+                Customer
+              </p>
 
             </div>
 

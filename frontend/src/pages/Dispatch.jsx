@@ -13,6 +13,8 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 
+const PAGE_SIZE = 7;
+
 function Dispatch() {
   const navigate = useNavigate();
 
@@ -65,7 +67,7 @@ function Dispatch() {
         setTotalPages(
 
             Math.ceil(
-                res.data.count / 10
+                res.data.count / PAGE_SIZE
             )
 
         );

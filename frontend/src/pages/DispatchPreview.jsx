@@ -260,23 +260,36 @@ function DispatchPreview() {
 
                 {/* Roll Tables */}
 
-                <div className="grid grid-cols-2 border-l border-r">
+                <div className="flex border-l border-r items-start">
 
-                  {/* Left */}
+                  <table className="w-1/2 border-r table-fixed">
 
-                  <table className="w-full border-r">
+                    <colgroup>
+                      <col className="w-[12%]" />   {/* S.NO */}
+                      <col className="w-[36%]" />  {/* ROLL */}
+                      <col className="w-[12%]" />  {/* L.NO */}
+                      <col className="w-[12%]" />  {/* KG */}
+                      <col className="w-[14%]" />  {/* MTRS */}
+                      <col className="w-[14%]" />  {/* GRAM */}
+                    </colgroup>
+
                     <thead>
+
                       <tr className="border-b">
+
                         <th>S.NO</th>
                         <th>ROLL</th>
                         <th>L.NO</th>
                         <th>KG</th>
                         <th>MTRS</th>
                         <th>GRAM</th>
+
                       </tr>
+
                     </thead>
 
-                    <tbody className="align-top">
+                    <tbody>
+
                       {leftRows.map(
                         (roll, index) => (
                           <tr
@@ -315,13 +328,26 @@ function DispatchPreview() {
                         )
                       )}
                     </tbody>
+
                   </table>
 
                   {/* Right */}
 
-                  <table className="w-full">
+                  <table className="w-1/2 table-fixed">
+                    
+                    <colgroup>
+                      <col className="w-[12%]" />   {/* S.NO */}
+                      <col className="w-[36%]" />  {/* ROLL */}
+                      <col className="w-[12%]" />  {/* L.NO */}
+                      <col className="w-[12%]" />  {/* KG */}
+                      <col className="w-[14%]" />  {/* MTRS */}
+                      <col className="w-[14%]" />  {/* GRAM */}
+                    </colgroup>
+
                     <thead>
+
                       <tr className="border-b">
+
                         <th>S.NO</th>
                         <th>ROLL</th>
                         <th>L.NO</th>
@@ -329,9 +355,10 @@ function DispatchPreview() {
                         <th>MTRS</th>
                         <th>GRAM</th>
                       </tr>
+
                     </thead>
 
-                    <tbody className="align-top">
+                    <tbody>
                       {rightRows.map(
                         (roll, index) => (
                           <tr
@@ -366,10 +393,14 @@ function DispatchPreview() {
                             <td>
                               {roll.gram}
                             </td>
+
                           </tr>
+                          
                         )
                       )}
+
                     </tbody>
+
                   </table>
 
                 </div>
@@ -428,9 +459,10 @@ function DispatchPreview() {
                   )}
 
                   <div className="text-center">
-                    <b>Received By</b>
 
-                    <div className="border-b w-40 mt-8" />
+                    <b>Received By</b>
+                    <div className="border-b w-40 mt-8" /> {/*Empty Box for empty space*/}
+
                   </div>
 
                 </div>
@@ -445,12 +477,12 @@ function DispatchPreview() {
               onClick={handleConfirmDispatch}
               disabled={loading}
               className="
-            bg-green-600
-            text-white
-            px-6
-            py-2
-            rounded
-            "
+                bg-green-600
+                text-white
+                px-6
+                py-2
+                rounded
+              "
             >
               Confirm Dispatch
             </button>
